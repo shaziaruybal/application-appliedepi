@@ -1,0 +1,8 @@
+.date {
+  margin-top: 2em;
+}
+
+@page {
+  size: letter;
+  margin: 3cm 2cm;
+}

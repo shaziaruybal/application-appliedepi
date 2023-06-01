@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width">
+<meta property="og:title" content="Cover Letter Applied Epi Instructor Application" />
+
+
+
+
+<meta name="author" content="Shazia Ruybal-Pesántez" />
+
+
+<meta name="description" content="Cover Letter Applied Epi Instructor Application">
+
+<script id="pandoc-meta" type="application/json">
+{"newpage_html_class":"page-break-after","paged-footnotes":false,"links-to-footnotes":false,"output":{"pagedown::html_letter":{"self_contained":false,"css":["letter","css/custom.css"]}},"author":"Shazia Ruybal-Pesántez","knit":"pagedown::chrome_print","title":"Cover Letter Applied Epi Instructor Application"}
+</script>
+
+<title>Cover Letter Applied Epi Instructor Application</title>
+
+
+<link href="shazia_coverletter_files/paged-0.20/css/letter.css" rel="stylesheet" />
+<script src="shazia_coverletter_files/paged-0.20/js/config.js"></script>
+<script src="shazia_coverletter_files/paged-0.20/js/paged.js"></script>
+<script src="shazia_coverletter_files/paged-0.20/js/hooks.js"></script>
+
+
+
+
+<link rel="stylesheet" href="css/custom.css" type="text/css" />
+
+</head>
+
+<body>
+
+<div class="running-h1-title"></div>
+
+<div class="running-h2-title"></div>
+
+
+
+<div class="front-page">
+<div id="header" class="title-page">
+<h1 class="title">Cover Letter Applied Epi Instructor Application</h1>
+<h2 class="author">Shazia Ruybal-Pesántez</h2>
+</div>
+</div>
+
+<div class="front-matter-container">
+</div>
+
+<div class="main">
+<style type="text/css">
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
+  body{
+    font-size: 9.5pt;
+    font-family: 'Roboto', sans-serif;
+}  
+</style>
+<div class="date">
+<p>30 May 2023</p>
+</div>
+<p><strong>RE: Application for Applied Epi Instructor</strong><br />
+<br>
+Dear Applied Epi team,</p>
+<p>I am extremely excited to apply to be an Applied Epi Instructor based on your recent <a href="https://twitter.com/appliedepi/status/1659124040135499780?s=20">Twitter post</a>. I am interested in being considered mainly for specialized courses and workshops, where I can share my knowledge and skills in topics such as dashboards, Shiny apps, advanced data viz, automated reports, and data management. I am based in London, UK, have availability/preference for full-day or week-long format courses, and am open to travel, provided my regular schedule permits. My advanced skills in <code>R</code> programming (tidyverse-focused), along with a deep understanding of how to translate <code>R</code>-based tools to meet the needs of operational research teams, make me well-suited for your instructor team. I have a proven track record of delivering successful workshops, both in English and Spanish, and have been involved in the development of several <code>R</code>-based tools that address the unique needs of on-the-ground research teams.</p>
+<p>A notable achievement is the development of <a href="https://shaziaruybal.shinyapps.io/covidClassifyR"><code>covidClassifyR</code></a>, an <code>R Shiny</code> web app to support COVID-19 serosurveillance efforts in Papua New Guinea and provide fit-for-purpose and easy-to-use tools for local researchers with limited to no programming skills. This app streamlined processing of raw data generated in the lab and analysis with advanced statistical methods to classify samples as being seropositive (i.e., having been infected with SARS-CoV-2) or not. After I led a <a href="https://shaziaruybal.github.io/covidClassifyR-workshop">4-day virtual training workshop</a>, this app was successfully used in-country and has directly informed nationwide COVID-19 surveillance efforts in PNG.</p>
+<p>Additionally, I have developed several <code>R flexdashboard</code>s for real-time updates and data visualization of both operational logistics and preliminary epidemiological trends, to be used by local researchers involved in population-based field studies in PNG and for COVID-19 serosurveillance in Ecuadorian blood banks. My code sample is a spin-off of a real routine dashboard I created and generated weekly for the field study team I worked closely with in PNG. These dashboards have proven to be invaluable for operational decision-making in PNG, and to inform public health officials during the initial phases of the COVID-19 pandemic in Ecuador when testing was limited.</p>
+<p>My experience extends beyond tool development and before moving to London, I had the privilege of serving as the President of <a href="https://meetup.com/en-AU/rladies-melbourne/">R-Ladies Melbourne Inc</a>, a non-profit organization promoting gender diversity in the R community and one of the most active R-Ladies Global chapters. In this role, I organized several <code>R</code> capacity-building workshops, webinars, and acquired unique skills in teaching material development, data visualization and communication. One of my most successful workshops, <a href="https://shaziaruybal.github.io/automate-cv-rmd/">“How to automate your CV with <code>rmarkdown</code>”</a> had over 80 live attendees and the <a href="https://www.youtube.com/watch?v=Fc1RwRskk08">recording</a> has since had &gt;5600 views. This workshop is a great example of my teaching style: clear, thorough, with a light touch of fun, and exemplifies my committment to delivering engaging training material. I hope to bring this approach and leverage my expertise to inspire and empower applied epidemiologists to use <code>R</code>!</p>
+<p>Please feel free to contact me if I can provide any additional information, I look forward to hearing from you.</p>
+<p>Sincerely,</p>
+<p>Shazia Ruybal-Pesántez</p>
+<p><strong>Code sample description</strong></p>
+<p>My code sample is a “mock” version of a routine dashboard that I created to support my collaborators in PNG during a 12-month longitudinal cohort study conducted across four sites. This study involved monthly epidemiological surveys of ~1000 individuals and data collection was conducted using REDCap with data uploads every couple of days. Given the challenges related to the cohort size and travel logistics, the team identified early on the most critical information they needed to keep track of to ensure study success, such as follow-up rates and identifying sites with potential participant loss to follow-up. I developed an automated framework and designed a “status” report that was generated every Tuesday before the team’s operational meeting. My <a href="https://github.com/shaziaruybal/application-appliedepi/code_sample">code sample Github repo</a> demonstrates this workflow (note some functionality is limited due to data sensitivity issues). First “<code>01_update_weekly_data.R</code>” was sourced to pull the latest data from REDCap, wrangle it for downstream visualization, and store it in the <code>data/</code> folder. The “<code>02_generate_report.R</code>” script was run to render an automated RMarkdown <code>flexdashboard</code>, with the latest data pull as a <code>param</code>. This dashboard presented key information on follow-up rates, potential loss to follow-up, and preliminary epidemiological trends related to febrile illness, malaria positivity, and anemia. The resulting dashboard was automatically saved in the <code>reports/</code> folder, providing the team with real-time, accessible visualizations of study progress. These automated weekly reports empowered the team to make rapid and informed decisions to ensure the study aims were met and also enabled them to easily share key information about malaria trends with the study communities. This <code>flexdashboard</code> was also super easy to generate, pretty much with the click of a button!</p>
+</div>
+
+
+
+<script>
+// when the page is about to reload via servr, remember the scroll position
+document.addEventListener('servr:reload', function(e) {
+  sessionStorage.setItem('pagedown-scroll', window.scrollY);
+});
+</script>
+</body>
+</html>

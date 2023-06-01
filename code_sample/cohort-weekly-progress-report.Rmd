@@ -1,0 +1,607 @@
+---
+title: "Cohort: Weekly Progress Report"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: fill
+    theme: bootstrap
+params:
+  date_update: 
+    value: !r Sys.Date()
+    input: date
+  latest_data:
+    value: weekly_data.rds
+    input: file
+---
+
+<!-- This has been edited for illustrative purposes - note this is not real data-->
+```{css, echo=F}
+.navbar {
+  background-color: #668aae;
+  border-color:white;
+}
+
+.navbar-inverse .navbar-brand {
+  color: white!important;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: white!important;
+}
+
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus {
+  color: white;
+  background-color: #00366c;
+}
+
+.navbar-inverse .navbar-nav > .disabled > a,
+.navbar-inverse .navbar-nav > .disabled > a:hover,
+.navbar-inverse .navbar-nav > .disabled > a:focus {
+  color: white;
+  background-color: transparent;
+}
+
+.navbar-inverse .navbar-toggle {
+  border-color: #00366c;
+}
+
+.navbar-inverse .navbar-toggle:hover,
+.navbar-inverse .navbar-toggle:focus {
+  background-color: #00366c;
+}
+
+.navbar-inverse .navbar-toggle .icon-bar {
+  background-color: white!important;
+}
+```
+
+
+```{r setup, include=FALSE}
+library(here)
+library(tidyverse)
+library(flexdashboard)
+library(readxl)
+library(kableExtra)
+library(DT)
+library(lubridate)
+library(janitor)
+library(RColorBrewer)
+library(ggpubr)
+library(epiR)
+library(patchwork)
+library(gtsummary)
+library(gt)
+library(plotly)
+library(leaflet)
+library(leaflet.minicharts)
+library(ggmap)
+library(scatterpie)
+```
+
+```{r load data}
+# Load the fake data
+cohort_data <- readRDS(params$latest_data)
+
+# for the code sample I generated fake datasets, load them below
+rdt_data <- readRDS(here("code_sample/data/", "RDT_data.rds"))
+fever_data <- readRDS(here("code_sample/data/", "fever_data.rds"))
+anemia_data <- readRDS(here("code_sample/data/", "anemia_data.rds"))
+coords <- readRDS(here("code_sample/data", "coords.rds"))
+schedule <- read_xlsx(here::here("code_sample/data", "visit_schedule.xlsx"))
+
+# Load the pre-made map for plotting spatiotemporal positivity rates
+load(here::here("code_sample/data", "map.rda"))
+```
+<p style="font-size:9pt; font-style:italic"> *Last updated: `r params$date_update` FOR ILLUSTRATIVE PURPOSES - CODE SAMPLE*</p>
+
+```{r color palettes}
+village_pal_four <- c("Bulal" = "dodgerblue3", 
+                      "Megiar" = "mediumpurple3",
+                      "Mirap" = "goldenrod3", 
+                      "Wasab" = "palevioletred3")
+village_pal <- c("Bulal" = "dodgerblue3", 
+                 "Megiar-A" = "mediumpurple2", 
+                 "Megiar-B" = "mediumpurple4",
+                 "Mirap" = "goldenrod3", 
+                 "Wasab-A" = "palevioletred2",
+                 "Wasab-B" = "palevioletred4")
+
+enrol_pal <- c("Bulal1" = "dodgerblue2", 
+               "Bulal2" = "dodgerblue3", 
+               "Megiar1" = "mediumpurple1",
+               "Megiar2" = "mediumpurple2",
+               "Megiar3" = "mediumpurple3",
+               "Megiar4" = "mediumpurple4",
+               "Mirap1" = "goldenrod2", 
+               "Mirap2" = "goldenrod3",  
+               "Wasab1" = "palevioletred1",
+               "Wasab2" = "palevioletred2",
+               "Wasab3" = "palevioletred3",
+               "Wasab4" = "palevioletred4")
+```
+
+Follow-Up{data-orientation=rows}
+=====================
+```{r enrolment numbers}
+tot_enrolment_numbers <- cohort_data %>% 
+  filter(redcap_event_name == "enrollment_arm_1") %>% 
+  tabyl(village_covid)
+
+wasabA_tot_enrol <- tot_enrolment_numbers %>% filter(village_covid == "Wasab-A") %>% select(n) %>% as.integer()
+wasabB_tot_enrol <- tot_enrolment_numbers %>% filter(village_covid == "Wasab-B") %>% select(n) %>% as.integer()
+wasab_tot_enrol <- wasabA_tot_enrol + wasabB_tot_enrol
+
+megiarA_tot_enrol <- tot_enrolment_numbers %>% filter(village_covid == "Megiar-A") %>% select(n) %>% as.integer()
+megiarB_tot_enrol <- tot_enrolment_numbers %>% filter(village_covid == "Megiar-B") %>% select(n) %>% as.integer()
+megiar_tot_enrol <- megiarA_tot_enrol + megiarB_tot_enrol
+
+bulal_tot_enrol <- tot_enrolment_numbers %>% filter(village_covid == "Bulal") %>% select(n) %>% as.integer()
+mirap_tot_enrol <- tot_enrolment_numbers %>% filter(village_covid == "Mirap") %>% select(n) %>% as.integer()
+
+tot_enrol <- wasab_tot_enrol + megiar_tot_enrol + bulal_tot_enrol + mirap_tot_enrol
+
+enrol_grp_numbers <- cohort_data %>% 
+  filter(redcap_event_name == "enrollment_arm_1") %>% 
+  tabyl(enrollment_group) %>% 
+  rename("total_enrolled" = "n")
+```
+
+```{r followup-data-curation}
+first_date_of_week <- function(year, week){
+  strptime(paste(year, week, 1), format = "%Y %W %u")}
+
+# This is the the entire breakdown of follow-up rates for each enrollment group and each follow-up visit - note that this includes the enrollment time point
+followup_rate_withenrol <- cohort_data %>%
+  group_by(visit, enrollment_group, epi_week, village_covid) %>%
+  tally() %>%
+  mutate(week_date = as.Date(first_date_of_week(2020, epi_week))) %>% 
+  group_by(visit, enrollment_group) %>% 
+  mutate(cum_n = cumsum(n)) %>% 
+  ungroup() %>% 
+  left_join(enrol_grp_numbers %>% select(enrollment_group, total_enrolled), by = "enrollment_group") %>% 
+  mutate(prop_followup = n/total_enrolled) %>% 
+  mutate(cumprop_followup = cum_n/total_enrolled) %>% 
+  mutate(village = case_when(grepl("Bulal", enrollment_group) ~ "Bulal",
+                             grepl("Megiar", enrollment_group) ~ "Megiar",
+                             grepl("Mirap", enrollment_group) ~  "Mirap",
+                             grepl("Wasab", enrollment_group) ~ "Wasab")) 
+
+# This is the entire breakdown of follow-up rates for each enrollment group and each follow-up visit (i.e. this gives the entire breakdown by visit week and visit type)
+followup_rate <- cohort_data %>%
+  filter(redcap_event_name != "enrollment_arm_1") %>%
+  group_by(visit, enrollment_group, epi_week, village_covid) %>%
+  tally() %>%
+  mutate(week_date = as.Date(first_date_of_week(2020, epi_week))) %>% 
+  group_by(visit, enrollment_group) %>% 
+  mutate(cum_n = cumsum(n)) %>% 
+  ungroup() %>% 
+  left_join(enrol_grp_numbers %>% select(enrollment_group, total_enrolled), by = "enrollment_group") %>% 
+  mutate(prop_followup = n/total_enrolled) %>% 
+  mutate(cumprop_followup = cum_n/total_enrolled) %>% 
+  mutate(village = case_when(grepl("Bulal", enrollment_group) ~ "Bulal",
+                             grepl("Megiar", enrollment_group) ~ "Megiar",
+                             grepl("Mirap", enrollment_group) ~  "Mirap",
+                             grepl("Wasab", enrollment_group) ~ "Wasab")) 
+
+# This is the summary of follow-up rates for each enrollment group and each follow-up visit 
+followup_rate_summary <- followup_rate %>% 
+  group_by(visit, enrollment_group, village) %>% 
+  top_n(n = 1, cumprop_followup) %>% 
+  ungroup() %>% 
+  select(enrollment_group, visit, cum_n, total_enrolled, cumprop_followup) %>% 
+  mutate(cumprop_followup = ceiling(cumprop_followup*100)) %>% 
+  arrange(enrollment_group) 
+
+median_followup_rate <- followup_rate_summary %>% 
+  group_by(enrollment_group) %>% 
+  summarise(med_rate = median(ceiling(cumprop_followup)))
+
+median_followup_rate_indiv <- cohort_data %>% 
+  filter(visit != "enrollment") %>% 
+  tabyl(subjid, visit) %>% adorn_totals("col") %>% 
+  left_join(cohort_data %>% select(subjid, enrollment_group, village), by = "subjid") %>% 
+  distinct(subjid, Total, enrollment_group, village) %>% 
+  group_by(enrollment_group) %>% 
+  mutate(prop_visits = round(Total/max(Total)*100, 0)) %>% 
+  distinct(subjid, enrollment_group, village, prop_visits) %>% 
+  summarise(med_rate = median(prop_visits)) 
+
+# median_followup_rate_indiv %>%
+#   kable(col.names = c("Enrollment group", "Median follow-up rate")) %>%
+#   kable_styling(full_width = F, bootstrap_options = "striped")
+  
+  
+subjid_fup <- cohort_data %>% filter(visit != "enrollment") %>% distinct(subjid)%>% pull(subjid)
+
+subjid_en <- cohort_data %>% filter(visit== "enrollment") %>% pull(subjid)
+
+subjid_LTF <- setdiff(subjid_en, subjid_fup)
+```
+
+```{r LTF}
+tot_followed <- cohort_data %>% filter(visit != "enrollment") %>% distinct(subjid) %>% nrow()
+LTF <- tot_enrol-tot_followed
+```
+
+```{r med-followup-groups}
+bul1_rate <- median_followup_rate %>% filter(enrollment_group == "Bulal1") %>% pull(med_rate)
+bul2_rate <- median_followup_rate %>% filter(enrollment_group == "Bulal2") %>% pull(med_rate)
+
+meg1_rate <- median_followup_rate %>% filter(enrollment_group == "Megiar1") %>% pull(med_rate)
+meg2_rate <- median_followup_rate %>% filter(enrollment_group == "Megiar2") %>% pull(med_rate)
+meg3_rate <- median_followup_rate %>% filter(enrollment_group == "Megiar3") %>% pull(med_rate)
+meg4_rate <- median_followup_rate %>% filter(enrollment_group == "Megiar4") %>% pull(med_rate)
+
+mir1_rate <- median_followup_rate %>% filter(enrollment_group == "Mirap1") %>% pull(med_rate)
+mir2_rate <- median_followup_rate %>% filter(enrollment_group == "Mirap2") %>% pull(med_rate)
+
+was1_rate <- median_followup_rate %>% filter(enrollment_group == "Wasab1") %>% pull(med_rate)
+was2_rate <- median_followup_rate %>% filter(enrollment_group == "Wasab2") %>% pull(med_rate)
+was3_rate <- median_followup_rate %>% filter(enrollment_group == "Wasab3") %>% pull(med_rate)
+was4_rate <- median_followup_rate %>% filter(enrollment_group == "Wasab4") %>% pull(med_rate)
+```
+
+```{r follow-up schedule}
+schedule <- schedule %>% mutate(interval = interval(start_date, end_date)) 
+schedule <- schedule %>% mutate(current_visit = c(as.Date(params$date_update) %within% interval))
+```
+
+Row {data-height=20}
+-----------------------------------------------------------------------
+### This week the field teams are visiting: **`r schedule %>% filter(current_visit == TRUE) %>% select(villages) %>% as.character()`** 
+
+Row {data-height=180}
+--------------------------------------------------------------------------------
+### Follow-up diagnostic
+```{r bul1-diag}
+valueBox(
+  value = paste0(bul1_rate, "%"),
+  caption = "median follow-up rate in Bulal1",
+  color = ifelse(bul1_rate >=80, "#00b200",
+                 ifelse(bul1_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+
+#pluck(median_followup_rate, 2, 1)
+```
+
+### Follow-up diagnostic
+```{r bul2-diag}
+valueBox(
+  value = paste0(bul2_rate, "%"),
+  caption = "median follow-up rate in Bulal2",
+  color = ifelse(bul2_rate >=80, "#00b200",
+                 ifelse(bul2_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+### Follow-up diagnostic
+```{r meg1-diag}
+valueBox(
+  value = paste0(meg1_rate, "%"),
+  caption = "median follow-up rate in Megiar1",
+  color = ifelse(meg1_rate >=80, "#00b200",
+                 ifelse(meg1_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+### Follow-up diagnostic
+```{r meg2-diag}
+valueBox(
+  value = paste0(meg2_rate, "%"),
+  caption = "median follow-up rate in Megiar2",
+  color = ifelse(meg2_rate >=80, "#00b200",
+                 ifelse(meg2_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+### Follow-up diagnostic
+```{r meg3-diag}
+valueBox(
+  value = paste0(meg3_rate, "%"),
+  caption = "median follow-up rate in Megiar3",
+  color = ifelse(meg3_rate >=80, "#00b200",
+                 ifelse(meg3_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+### Follow-up diagnostic
+```{r meg4-diag}
+valueBox(
+  value = paste0(meg4_rate, "%"),
+  caption = "median follow-up rate in Megiar4",
+  color = ifelse(meg4_rate >=80, "#00b200",
+                 ifelse(meg4_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+Row{data-width=50%}
+--------------------------------------------------------------------------------
+### Follow-up diagnostic
+```{r mir1-diag}
+valueBox(
+  value = paste0(mir1_rate, "%"),
+  caption = "median follow-up rate in Mirap1",
+  color = ifelse(mir1_rate >=80, "#00b200",
+                 ifelse(mir1_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+### Follow-up diagnostic
+```{r mir2-diag}
+valueBox(
+  value = paste0(mir2_rate,"%"),
+  caption = "median follow-up rate in Mirap2",
+  color = ifelse(mir2_rate >=80, "#00b200",
+                 ifelse(mir2_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+### Follow-up diagnostic
+```{r was1-diag}
+valueBox(
+  value = paste0(was1_rate, "%"),
+  caption = "median follow-up rate in Wasab1",
+  color = ifelse(was1_rate >=80, "#00b200",
+                 ifelse(was1_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+### Follow-up diagnostic
+```{r was2-diag}
+valueBox(
+  value = paste0(was2_rate, "%"),
+  caption = "median follow-up rate in Wasab2",
+  color = ifelse(was2_rate >=80, "#00b200",
+                 ifelse(was2_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+### Follow-up diagnostic
+```{r was3-diag}
+valueBox(
+  value = paste0(was3_rate, "%"),
+  caption = "median follow-up rate in Wasab3",
+  color = ifelse(was3_rate >=80, "#00b200",
+                 ifelse(was3_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+### Follow-up diagnostic
+```{r was4-diag}
+valueBox(
+  value = paste0(was4_rate, "%"),
+  caption = "median follow-up rate in Wasab4",
+  color = ifelse(was4_rate >=80, "#00b200",
+                 ifelse(was4_rate <=60, "#ff7f7f",
+                        "#ffb54d")) 
+)
+```
+
+Column{data-width=30%}
+--------------------------------------------------------------------------------
+
+### Follow-up rate summary by visit
+```{r}
+bul1_rows <- which(followup_rate_summary$enrollment_group == "Bulal1")
+bul2_rows <- which(followup_rate_summary$enrollment_group == "Bulal2")
+
+meg1_rows <- which(followup_rate_summary$enrollment_group == "Megiar1")
+meg2_rows <- which(followup_rate_summary$enrollment_group == "Megiar2")
+meg3_rows <- which(followup_rate_summary$enrollment_group == "Megiar3")
+meg4_rows <- which(followup_rate_summary$enrollment_group == "Megiar4")
+
+mir1_rows <- which(followup_rate_summary$enrollment_group == "Mirap1")
+mir2_rows <- which(followup_rate_summary$enrollment_group == "Mirap2")
+
+was1_rows <- which(followup_rate_summary$enrollment_group == "Wasab1")
+was2_rows <- which(followup_rate_summary$enrollment_group == "Wasab2")
+was3_rows <- which(followup_rate_summary$enrollment_group == "Wasab3")
+was4_rows <- which(followup_rate_summary$enrollment_group == "Wasab4")
+```
+
+```{r}
+followup_rate_summary %>% 
+  mutate(cumprop_followup = cell_spec(cumprop_followup, 
+                                      color = ifelse(cumprop_followup >= 80, "#00b200",
+                                                     ifelse(cumprop_followup <=60, "#ff7f7f",
+                                                            "#ffb54d")))) %>%
+  kable(escape = F,
+        col.names = c("Enrollment group", "Visit", "Participants surveyed", "Total enrolled", "Follow-up rate (%)"), 
+        align = "c") %>% 
+  kable_styling(bootstrap_options = "striped", full_width = F) %>% 
+  pack_rows("Bulal1", min(bul1_rows), max(bul1_rows)) %>% 
+  pack_rows("Bulal2", min(bul2_rows), max(bul2_rows)) %>% 
+  pack_rows("Megiar1", min(meg1_rows), max(meg1_rows)) %>% 
+  pack_rows("Megiar2", min(meg2_rows), max(meg2_rows)) %>% 
+  pack_rows("Megiar3", min(meg3_rows), max(meg3_rows)) %>% 
+  pack_rows("Megiar4", min(meg4_rows), max(meg4_rows)) %>% 
+  pack_rows("Mirap1", min(mir1_rows), max(mir1_rows)) %>% 
+  pack_rows("Mirap2", min(mir2_rows), max(mir2_rows)) %>% 
+  pack_rows("Wasab1", min(was1_rows), max(was1_rows)) %>% 
+  pack_rows("Wasab2", min(was2_rows), max(was2_rows)) %>% 
+  pack_rows("Wasab3", min(was3_rows), max(was3_rows)) %>% 
+  pack_rows("Wasab4", min(was4_rows), max(was4_rows))
+```
+
+### Median participant follow-up rate
+```{r, out.width="50%"}
+diagnostic_pal <- c(">79" = "#00b200", "61-79" = "#ffb54d", "<61" = "#ff7f7f")
+
+median_followup_rate_indiv %>% 
+  filter(!is.na(enrollment_group)) %>%
+  mutate(color = case_when(med_rate >= 80 ~ ">79",
+                           med_rate <=60 ~ "<61",
+                           TRUE ~ "61-79")) %>%
+  ggplot(aes(x = enrollment_group, y = med_rate, fill = color)) +
+    geom_bar(stat = "identity") +
+    geom_hline(yintercept = 80, linetype = "dashed", color = "black") +
+    geom_hline(yintercept = 60, linetype = "dashed", color = "black") +
+    #geom_pointrange(aes(ymin = 0, ymax = med_rate, color = color)) + 
+    geom_text(aes(label = paste0(med_rate, "%"), color = color), vjust = -0.5, size = 4) +
+    scale_fill_manual(values = diagnostic_pal,
+                      name = "") +
+    scale_color_manual(values = diagnostic_pal) +
+    labs(x = "enrollment group",
+         y = "median participant follow-up rate (%)") +
+    theme_light() +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+### Potential loss to follow-up (n=`r LTF`)
+```{r, out.width="50%"}
+cohort_data %>% 
+  filter(subjid %in% subjid_LTF) %>% 
+  count(subjid, enrollment_group) %>% 
+  ggplot(aes(x = enrollment_group, y = n, fill = enrollment_group)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = enrol_pal,
+                      name = "") +
+    labs(x = "enrollment group",
+         y = "number of participants potentially lost to follow-up") +
+    theme_light() 
+```
+
+<!-- ### Potential loss to follow-up participant info{data-height=50%} -->
+<!-- ```{r} -->
+<!-- cohort_data %>%  -->
+<!--   filter(subjid %in% subjid_LTF) %>%  -->
+<!--   select(subjid, bl_hhid, bl_sex, bl_agey, enrollment_group) %>%  -->
+<!--   mutate_if(is.character, as.factor) %>%  -->
+<!--   rename("Participant ID" = "subjid", -->
+<!--          "Household ID" = "bl_hhid", -->
+<!--          "Sex" = "bl_sex", -->
+<!--          "Age (years)" = "bl_agey", -->
+<!--          "Enrollment group" = "enrollment_group") %>%  -->
+<!--   datatable(extensions = "Buttons",  -->
+<!--             options = list(dom = "Bfrtip",  -->
+<!--                            buttons = (list( -->
+<!--                              "copy", list( -->
+<!--                                extend = "collection",  -->
+<!--                                buttons = c("csv", "excel"),  -->
+<!--                                text = "Download")))),  -->
+<!--             rownames = F,  -->
+<!--             filter = "top", -->
+<!--             style = "bootstrap",  -->
+<!--             height = "50px", -->
+<!--             width = "50px") -->
+<!-- ``` -->
+
+
+Monthly trends{style="position:relative;"}
+=====================
+
+Column{style="height:50pc;width:50pc"}
+--------------------------------------------------------------------------------
+
+### Febrile illness{.no-padding}
+```{r, fig.fullwidth=TRUE}
+ggplotly(fever_data %>% 
+  ggplot(aes(x = as.Date(visit_month), y = prop, color = village, group = village)) +
+    geom_point() +
+    geom_line() +
+    scale_color_manual(values = village_pal_four) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1)) +
+    scale_x_date(date_breaks = "month",
+                 date_labels = "%b-%Y") +
+    labs(x = "month",
+         y = "Prevalence of fever ≥37.5ºC") + 
+    theme_light() +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1)))
+```
+
+### RDT positivity{.no-padding}
+```{r, fig.fullwidth=TRUE}
+ggplotly(rdt_data %>% 
+  ggplot(aes(x = as.Date(visit_month), y = prop, color = village, group = village)) +
+    geom_point() +
+    geom_line() +
+    scale_color_manual(values = village_pal_four) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0,1)) +
+    scale_x_date(date_breaks = "month",
+                 date_labels = "%b-%Y") +
+    labs(x = "month",
+         y = "RDT positivity",
+         caption = expression(italic("Note: an RDT is only performed if participant is unwell and/or has a fever"))) + 
+    theme_light() +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1)))
+```
+
+Column{style="height:50pc;width:50pc"}
+--------------------------------------------------------------------------------
+
+### Spatiotemporal RDT positivity{.no-padding}
+```{r}
+rdt_prop_spatiotemp <- cohort_data %>% tabyl(village, rdt_result, visit_month) %>% adorn_totals("col")
+
+rdt_prop_spatiotemp <- map2_df(rdt_prop_spatiotemp, names(rdt_prop_spatiotemp), ~ mutate(.x, visit_month = .y)) 
+
+rdt_prop_spatiotemp <- rdt_prop_spatiotemp %>% mutate(radius = (0.4 * sqrt(Total) / sqrt(max(Total)))) 
+
+rdt_prop_spatiotemp <- rdt_prop_spatiotemp %>% left_join(coords, by = "village")
+
+# remove the 0's
+rdt_prop_spatiotemp <- rdt_prop_spatiotemp %>% filter(Total > 0)
+
+rdt_prop_spatiotemp <- rdt_prop_spatiotemp %>% mutate(month = paste0(month(visit_month, label = T), "-", year(visit_month)))
+
+rdt_prop_spatiotemp <- rdt_prop_spatiotemp %>% mutate(Positive = `Positive (Pf or Mixed)` + `Positive (Pf Single)` + `Positive (Pv, Po, Pm)`)
+
+# New labels for month variable
+rdt_prop_spatiotemp <- rdt_prop_spatiotemp %>% mutate(visit_month = factor(visit_month, levels = .$visit_month, labels = rdt_prop_spatiotemp$month))
+```
+
+```{r, fig.fullwidth=TRUE}
+ggmap(map) +
+  geom_scatterpie(data = rdt_prop_spatiotemp, 
+                  aes(x = med_lon, 
+                      y = med_lat, 
+                      r = radius/12,
+                      group = village),
+                  cols = c("Negative", "Positive")) +
+  scale_fill_manual(values = c("grey", "#ff678d"),
+                    name = "RDT result") +
+  # geom_scatterpie_legend(rdt_prop_spatiotemp$radius/10,
+  #                        n = 2,
+  #                        labeller = function(x) x = unique(rdt_prop_spatiotemp$Total),
+  #                        x = -145.63,
+  #                        y = -4.92) +
+  labs(x = "longitude",
+       y = "latitude") +
+  theme_bw() +
+  facet_wrap(~visit_month) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Anemia{.no-padding}
+```{r, fig.fullwidth=TRUE}
+anemia_data %>% 
+  ggplot(aes(x = reorder(month, visit_month), y = hb, fill = sex)) +
+  geom_boxplot(alpha = 0.9) +
+  geom_hline(yintercept = 11, linetype = "dashed", color = "black") +
+  scale_fill_brewer(palette = "Paired", 
+                    labels = c("Female", "Male"),
+                    name = "") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n=10), limits = c(0, 20)) +
+  labs(x = "month",
+       y = "hemoglobin (g/dL)",
+       caption = expression(italic("Note: dashed line indicates mild anemia threshold (<11g/dL)"))) + 
+  facet_wrap(village~.) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```

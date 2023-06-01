@@ -1,0 +1,310 @@
+---
+title: "Shazia's resume"
+author: Shazia Ruybal-Pesántez
+date: "`r Sys.Date()`"
+output:
+  pagedown::html_resume:
+    self_contained: FALSE
+    css: ['resume', 'css/edits.css']
+# uncomment this line to produce HTML and PDF in RStudio:
+knit: pagedown::chrome_print
+---
+
+Aside
+================================================================================
+
+![Shazia](shazia.jpg){width=60%}
+
+Contact Info {#contact}
+--------------------------------------------------------------------------------
+
+- <i class="fa fa-envelope"></i> s.ruybal@imperial.ac.uk
+- <i class="fa fa-github"></i> [github.com/shaziaruybal](https://github.com/shaziaruybal)
+- <i class="fa fa-globe"></i> [shaziaruybal.com](https://shaziaruybal.com)
+- <i class="fa fa-twitter"></i> [@DrShaziaRuybal](https://twitter.com/drshaziaruybal)
+
+<br>
+I am an experienced `R` user for data processing, vizualization, communication, reports/dashboards, shiny apps, workshop development/organization and am passionate about open science and the development of digital tools for research. See below for more details.
+
+Skills {#skills}
+--------------------------------------------------------------------------------
+
+- <i class="fa fa-chart-line"></i> Full experience in genetic/genomic sequencing data analysis, population genetic and epidemiological methods, database curation/management, and reproducible research workflows
+
+- <i class="fa fa-laptop-code"></i> Expert in R (tidyverse), RStudio, RMarkdown, Shiny, SLURM/HPC
+
+- <i class="fa fa-laptop-code"></i> Experienced in Git/Github, LaTeX, CSS, HTML, Quarto, Python, REDCap
+
+Languages {#languages}
+--------------------------------------------------------------------------------
+- Native speaker English and Spanish
+- French Level A2
+- Dutch Level A1
+
+Additional training {#training}
+--------------------------------------------------------------------------------
+- **2021: Short course: Multiple imputation in `R`** (Victorian Centre for Biostatistics)
+- **2021: Diversity Scholar Workshop** (RStudio)
+- **2018: Certification "Teaching Skills for Graduate Researchers** (University of Melbourne)
+- **2017: Winter School in Mathematical Biology** (The University of Queensland)
+- **2015: Short course: Spatial mapping and GIS `R` skills** (University of Melbourne)
+
+Main
+================================================================================
+
+Shazia Ruybal-Pesántez {#title}
+--------------------------------------------------------------------------------
+
+### Genomic Epidemiologist (PhD) | MRC Centre for Global Infectious Disease Analysis, Imperial College London
+
+I am a genomic epidemiologist with expertise in population genetics, bioinformatics, and epidemiology of infectious diseases, particularly malaria. I am based at Imperial College London and am an Adjunct Associate Professor at Universidad San Francisco de Quito in Ecuador. For a list of my publications, see [Google Scholar](https://scholar.google.com.au/citations?user=E7dY4foAAAAJ&hl=en).
+
+Qualifications {data-icon=graduation-cap data-concise=true}
+--------------------------------------------------------------------------------
+
+### The University of Melbourne
+
+PhD in Genetic Epidemiology
+
+Melbourne, Australia
+
+2018
+
+<!-- <i class="fa fa-award"></i> Melbourne International Engagement Award recipient -->
+<!-- Thesis: [Genetic epidemiology of the *Plasmodium falciparum* reservoir of infection in Bongo District, Ghana](https://minerva-access.unimelb.edu.au/handle/11343/216521) -->
+
+### The Colorado College
+
+BA in Biology
+
+Colorado Springs, CO, USA
+
+2012
+
+<!-- <i class="fa fa-award"></i> Presidential Scholarship & Jason Wilkes Memorial Prize in Biology recipient -->
+
+Selected Research Experience {data-icon=laptop}
+--------------------------------------------------------------------------------
+
+### Research Associate, Dept of Infectious Disease Epidemiology
+
+[MRC GIDA](https://www.imperial.ac.uk/people/s.ruybal), Imperial College London
+
+London, UK
+
+2022 - Present
+
+- Developing novel methods and computational tools to analyse genomic data to support malaria molecular surveillance. *My projects include: *
+- <i class="fa fa-github" style="color:#AA336A"></i> [**`SIMPLEGEN`**](mrc-ide.github.io/SIMPLEGEN) R package to simulate malaria genetic epi to explore the "power" of genomic surveillance sampling designs
+- <i class="fa fa-github" style="color:#AA336A"></i> [**`DRpower`**](https://shaziaruybal.shinyapps.io/DRpower_app) Shiny app (not yet public) to simplify the design of studies that monitor rapid diagnostic tests effectiveness for malaria diagnosis in the field
+- <i class="fa fa-wrench" style="color:#AA336A"></i><font color= "#AA336A"> Skills used:</font> R, RMarkdown, Github, Shiny, Quarto, Python
+
+### Visiting Scientist, Institute of Microbiology
+Universidad San Francisco de Quito
+
+Quito, Ecuador
+
+2021 - 2022
+
+- Support the coordination and data analysis (ongoing) of a cohort study to understand vaccine and infection‐induced immunity to SARS‐CoV‐2
+- Support data analysis (ongoing) on the genomic epidemiology and phylogenetics of SARS‐CoV‐2 in Ecuador
+- <i class="fa fa-wrench" style="color:#AA336A"></i><font color= "#AA336A"> Skills used:</font> REDCap, R, RMarkdown, Github, HPC/SLURM
+
+### Consultant Epidemiologist
+Freelance
+
+Quito, Ecuador
+
+2020
+
+- Consulted for the Ministry of Foreign Affairs and Migration & National COVID-19 Emergency Response Committee providing internal analyses on case/testing trends and epi modelling (importation dynamics, *Reff*) 
+- Consulted for the Ecuadorian Red Cross National Blood Bank to establish SARS-CoV-2 sero-surveillance as part of the COVID-19 emergency response, delivered a surveillance `flexdashboard` (not public)
+- <i class="fa fa-wrench" style="color:#AA336A"></i><font color= "#AA336A"> Skills used:</font> R, RMarkdown, Github, Dashboards
+
+### Research Associate, Population Health and Immunity Division
+
+Walter & Eliza Hall Institute of Medical Research
+
+Melbourne, Australia
+
+2019 - 2022
+
+- Supported field implementation and lead the overall analysis (ongoing) of a 12‐month longitudinal cohort study in Papua New Guinea
+- Work involved `flexdashboard` for routine updates and data viz of both operational logistics aspects and real-time epidemiological trends
+- Worked with large epidemiological datasets from a range of malaria, vector-borne diseases, and COVID-19 projects and led the data curation, management and analysis using reproducible workflows
+- <i class="fa fa-wrench" style="color:#AA336A"></i><font color= "#AA336A"> Skills used:</font> Applied epi, R, RMarkdown, Github/Gitlab, Dashboards, Shiny
+
+### PhD Researcher/Research Associate, Bio21 Institute
+
+University of Melbourne
+
+Melbourne, Australia 
+
+2014 - 2019
+
+- Applied genomic epidemiology approaches (bioinformatic and population genetic methods) using `R` to better understand the malaria transmission dynamics in Ecuador and Ghana
+- <i class="fa fa-wrench" style="color:#AA336A"></i><font color= "#AA336A"> Skills used:</font> Applied epi, R, RMarkdown, Github, Data management/curation
+
+Positions {data-icon=suitcase data-concise=true}
+--------------------------------------------------------------------------------
+
+### Research Associate, *Imperial College London*
+N/A
+
+N/A
+
+2022-Present
+
+### Adjunct Associate Professor, *Universidad San Francisco de Quito*
+N/A
+
+N/A
+
+2020-Present
+
+### Research Fellow (now Honorary), *University of Melbourne, Walter and Eliza Hall Institute of Medical Research*
+N/A
+
+N/A
+
+2019-Present
+
+### Honorary Research Fellow, *Burnet Institute, Australian Centre for Research Excellence in Malaria Research and Centre for the Elimination of Neglected Tropical Diseases*
+N/A
+
+N/A
+
+2019-2022 
+
+### Research Assistant, *New York University School of Medicine*
+N/A
+
+N/A
+
+2012-2014
+
+Selected Teaching Experience {data-icon=chalkboard-teacher}
+--------------------------------------------------------------------------------
+### R-Ladies Melbourne Inc
+
+Registered female-led charity, >2300 members
+
+Melbourne, Australia
+
+2019-2022
+
+- Leadership roles (Secretary, President) organising [monthly meetups](https://www.meetup.com/en-AU/rladies-melbourne/) ranging from beginner to advanced `R` [topics](https://github.com/R-LadiesMelbourne). See sidebar for workshops I have (co-)led
+
+### Guest lecturer
+N/A
+
+Ecuador/Australia
+
+2019-Present
+
+- 2019: Nossal Institute for Global Health MPH on Malaria and Child Health 
+- 2021: Universidad San Francisco de Quito MSc Innovation on COVID‐19 epidemiology, variant dynamics and implications for public health in Ecuador
+
+### Student supervision
+
+University of Melbourne
+
+N/A
+
+2016-Present
+
+- Supervised/mentored students to completion in honors/undergrad (3), MSc (1) and PhD (3, 2 ongoing) with projects in population genetics, seroepidemiology, and computational biology. I serve on 3 PhD committees at UoM
+- Actively involved in the supervision, mentorship and capacity‐building of researcher officers/technical staff in Papua New Guinea and Ecuador
+
+Notable Awards {data-icon=medal}
+--------------------------------------------------------------------------------
+
+### COVID-19 Digital Grant (Regional Collaborations Programme)
+
+Australian Academy of Sciences & Dept of Industry, Science, Energy and Resources
+
+Melbourne, Australia
+
+Apr 2021
+
+- Awarded A$10,000 as Chief Investigator for the collaborative project: [Fit‐for‐purpose analytical tools to support COVID‐19 sero‐surveillance in Papua New Guinea](https://www.science.org.au/news-and-events/news-and-media-releases/regional-research-set-get-digital-boost). This led to the development of [`covidClassifyR`](shaziaruybal.shinyapps.io/covidclassifyr)
+
+### Kellaway Excellence Award in Education
+
+Walter and Eliza Hall Institute of Medical Research
+
+Melbourne, Australia
+
+Dec 2019
+
+- Awarded to recognize the significant contribution to improve female representation in statistical bioinformatics through joint leadership of [R‐Ladies Melbourne](https://github.com/R-LadiesMelbourne), the R programming community for women in Australia
+
+<!-- Selected Presentations and Media {data-icon=microphone} -->
+<!-- -------------------------------------------------------------------------------- -->
+
+<!-- ### [`covidClassifyR`: Streamlining data analysis pipelines to enhance the monitoring of COVID-19 in Papua New Guinea](https://shaziaruybal.github.io/covidClassifyR_useR2022/#1) -->
+
+<!-- Poster at useR! 2022 conference -->
+
+<!-- Virtual -->
+
+<!-- 2022 -->
+
+<!-- ### Panelist on "Lecciones aprendidas con variantes COVID‐19" -->
+
+<!-- Universidad San Francisco de Quito -->
+
+<!-- Quito, Ecuador -->
+
+<!-- 2022 -->
+
+<!-- - Panel hosted by USFQ & national newspaper El Universo "Lessons learned from COVID‐19 variants" recording (in Spanish) [here](https://www.youtube.com/watch?v=9TOPklkF5ZA) and [media release](https://www.eluniverso.com/noticias/ecuador/en-vivo-webinar-sobre-las-lecciones-aprendidas-con-las-variantes-del-covid-19-nota/) -->
+
+<!-- ### TV interview "Ómicron ‐ la nueva variante que está afectando al mundo" -->
+
+<!-- Visionarias EC National News Program -->
+
+<!-- Quito, Ecuador -->
+
+<!-- 2021 -->
+
+<!-- - Segment "Omicron‐the new variant affecting the globe” recording (in Spanish) [here](https://youtu.be/utSVelCdcvU) -->
+
+Second page sidebar {.aside .extra-sidebar}
+================================================================================
+Digital tools {#tools}
+--------------------------------------------------------------------------------
+
+- [`SIMPLEGEN`](mrc-ide.github.io/SIMPLEGEN): `R` package to simulate malaria genetic epidemiology 
+
+- [`CovidClassifyR`](shaziaruybal.shinyapps.io/covidClassifyR): Shiny app to process and analyse COVID-19 serological data. See my <i class="fa fa-youtube" style="color:#AA336A"></i> [useR! 2022 presentation](https://shaziaruybal.github.io/covidClassifyR_useR2022/#1)
+
+- [`CovidVaccinationScore`](https://covid19analytics.shinyapps.io/VaccinationScore/): Shiny app to help individuals better understand their "priority" status during vaccine roll-out in Ecuador
+
+- [Ecuador blood bank COVID-19 sero-surveillance `flexdashboard` (not open-source)](): presented anonymized/aggregated SARS-COV-2 seroprevalence data from monthly screening of blood donation samples
+
+- [ICEMR PNG weekly `flexdashboard` (not open-source)](): presented operational data (e.g. follow-up rates) for study team to plan field activities, as well as prelim epi trends (e.g. malaria test positivity) 
+
+Workshops {#workshops}
+--------------------------------------------------------------------------------
+**Crea tu dashboard en `R`: Visualizando datos del mundial FIFA (Oct 2022)**: Presented at [Brown Bag Seminar InnovaLab](https://shaziaruybal.github.io/dashboard-mundialFIFA/#1) at Institute of Tropical Medicine/University Cayetano Heredia Peru (in Spanish) for the MSc program
+
+**Applied Malaria Molecular Surveillance workshop (Aug 2022)**: Co-organized [4‐day workshop](https://github.com/mrc-ide/AMMS2022) for African researchers on how to use `R`-based data analysis tools for malaria genomics
+
+**Shiny app `covidClassifyR` workshop (March 2022)**: Led [4‐day virtual workshop](https://shaziaruybal.github.io/covidClassifyR-workshop/) for researchers in Papua New Guinea on how to use `covidClassifyR`
+
+**Automate your CV in `rmarkdown`: easy as 1, 2, `knit`! (Feb 2022)**: Presented at [R-Ladies Melbourne meetup](https://shaziaruybal.github.io/automate-cv-rmd/#1), the [<i class="fa fa-youtube" style="color:#AA336A"></i> recording](https://www.youtube.com/watch?v=Fc1RwRskk08) has been viewed >5600 times
+
+**STEM Workshop "Solve an outbreak and become a disease detective" (Sep 2019 & 2022)**: Co-led workshop at "It Takes a Spark" Conference teaching young girls (Y7-12) epidemiology and `R` skills [(materials)](https://github.com/R-LadiesMelbourne/2019-0912-It-takes-a-spark)
+
+<br> 
+<br> 
+<br> 
+
+Disclaimer {#disclaimer}
+--------------------------------------------------------------------------------
+Made with [pagedown](https://github.com/rstudio/pagedown), [<i class="fa fa-github"></i> source code](https://github.com/shaziaruybal/application-appliedepi/)
+
+See more detailed CV [here](https://shaziaruybal.com/files/cv-vitae.pdf)
+
+Last updated on `r Sys.Date()`

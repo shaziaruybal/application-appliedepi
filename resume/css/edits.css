@@ -1,0 +1,118 @@
+* {
+/* Override default margins*/
+  --pagedjs-margin-right: 0.1in;
+  --pagedjs-margin-left: 0in;
+  --pagedjs-margin-top: 0.3in;
+  --pagedjs-margin-bottom: 0.2in;
+}
+
+:root{
+  --sidebar-width: 14rem; /* side bar width */
+  --sidebar-background-color: #cfc4c6;
+  --sidebar-horizontal-padding: 0.01in; /* Reduce sidebar padding */
+  --decorator-border: 2px solid #cfc4c6; /* change color and thickness of timeline */
+  --decorator-outer-dim: 10px; /* Make position deliniating circles larger */
+  --row-blocks-padding-top: 0.3rem; /* reduce padding on top of sections */
+  --date-block-width: 0.5in; /* reduce date text width */
+}
+
+#title{
+  position: relative;
+  left: 0.1in; /* reduce title left indent, default 0.55in */
+  right: 0in;
+  margin: auto 0.1in 0.1in auto; /* reduce title margins, default auto 0.55in 0.3in auto; */
+  line-height: 1.2;
+}
+
+.decorator::after{
+  background-color:  #AA336A; /* change color of the timeline dots */
+
+}
+
+/* Move closer to start and up towards header */
+.aside ul {
+    padding-left: 0rem;
+}
+
+/* Reduce padding on top of sidebar sections */
+.aside .level2{
+  margin-top: 0.25in;
+}
+
+.details .place {
+    margin-top: 0.25rem;
+}
+  
+.main-block:not(.concise) .details div {
+    padding-top: 0.005rem;
+  
+}
+  
+/* Make sure elements in aside are centered and have a nice small text */
+.aside {
+    width: calc(var(--sidebar-width) + 9px);
+    line-height: 1.2;
+    font-size: 0.75rem;
+}
+
+/* Change link color #006400 */
+a {
+  color: #AA336A
+}
+
+/* Change padding on top of the photo */
+.aside {
+  padding-top: 0;
+}
+
+.aside > p:first-of-type {
+  margin-top: 0;
+}
+
+/* Make an extra sidebar for page 2 - thanks to: https://github.com/rstudio/pagedown/issues/15#issuecomment-571973034 */
+
+.extra-sidebar {
+  top: 0;
+  padding-top: 0;
+}
+
+.extra-sidebar h1 {
+  display: none;
+}
+
+.extra-sidebar .level2:first-of-type {
+  margin-top: 0;
+}
+
+/*Add page number to the bottom right of each page */
+@page :left {
+  @bottom-right {
+    content: counter(page) '/' counter(pages);
+    font-size: 0.6rem;
+  }
+}
+@page :right {
+  @bottom-right {
+    content: counter(page) '/' counter(pages);
+    font-size: 0.6rem;
+  }
+}
+
+/* When in PDF export mode make sure superscripts are nice and small and italic */
+sup {
+  font-size: 0.45rem;
+  font-style: italic;
+}
+
+/**** minor tweaks on the icon fonts ****/
+#main h2 > .fa-laptop{
+  left: calc(var(--main-blocks-title-icon-offset-left) - 2pt);
+}
+
+#main h2 > .fa-chalkboard-teacher{
+  left: calc(var(--main-blocks-title-icon-offset-left) - 2pt);
+}
+
+#main h2 > .fa-microphone{
+  left: calc(var(--main-blocks-title-icon-offset-left) - 2pt);
+}
